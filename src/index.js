@@ -22,17 +22,13 @@ function isAllTrue(array, fn) {
     } else if (typeof fn !== 'function') {
         throw new Error('fn is not a function');
     }
-    let flag = true;
-
-    for (let item of array) {
-        let result = fn(item);
-        
-        if (flag) {
-            flag = result;
+    for (let i = 0; i < array.length; i++) {
+        if (!fn(array[i])) {
+            return false;
         }
     }
 
-    return flag;
+    return true;
 }
 
 /*
@@ -57,17 +53,14 @@ function isSomeTrue(array, fn) {
     } else if (typeof fn !== 'function') {
         throw new Error('fn is not a function');
     }
-    let flag = false;
 
-    for (let item of array) {
-        let result = fn(item);
-
-        if (!flag) {
-            flag = result;
+    for (let i = 0; i < array.length; i++) {
+        if (fn(array[i])) {
+            return true;
         }
     }
 
-    return flag;
+    return false;
 }
 
 /*
@@ -122,13 +115,13 @@ function calculator(number = 0) {
     }
 
     return {
-        sum: function () {
-            return [...arguments].reduce((a, i) => a + i, number);
+        sum: function (...args) {
+            return args.reduce((a, i) => a + i, number);
         },
-        dif: function () {
-            return [...arguments].reduce((a, i) => a - i, number);;
+        dif: function (...args) {
+            return args.reduce((a, i) => a - i, number);
         },
-        div: function () {
+        div: function (...args) {
             let divide = (prev, i) => {
                 if (i === 0) {
                     throw new Error('division by 0');
@@ -137,10 +130,10 @@ function calculator(number = 0) {
                 return prev / i;
             }
 
-            return [...arguments].reduce(divide, number);
+            return args.reduce(divide, number);
         },
-        mul: function () {
-            return [...arguments].reduce((a, i) => a * i, number);
+        mul: function (...args) {
+            return args.reduce((a, i) => a * i, number);
         }
     }
 }
