@@ -27,6 +27,22 @@ const homeworkContainer = document.querySelector('#homework-container');
    homeworkContainer.appendChild(newDiv);
  */
 function createDiv() {
+    let getRandomNumberTo = function (number) {
+        return Math.ceil(Math.random() * number);
+    }
+    let div = document.createElement('div');
+    let color = `rgb(${getRandomNumberTo(256)},${getRandomNumberTo(256)},${getRandomNumberTo(256)})`
+    
+    div.classList.add('draggable-div');
+    div.style.backgroundColor = color;
+    div.style.width = `${getRandomNumberTo(500) + 1}px`;
+    div.style.height = `${getRandomNumberTo(500) + 1}px`;
+    div.style.top = `${getRandomNumberTo(500) + 1}px`;
+    div.style.left = `${getRandomNumberTo(500) + 1}px`
+    div.style.position = 'absolute';
+    div.draggable = true;
+
+    return div;
 }
 
 /*
@@ -38,6 +54,20 @@ function createDiv() {
    addListeners(newDiv);
  */
 function addListeners(target) {
+
+    let deltaX = null;
+    let deltaY = null;
+
+    target.addEventListener('dragstart', evt => {
+        deltaX = evt.target.offsetLeft - evt.clientX;
+        deltaY = evt.target.offsetTop - evt.clientY;        
+    })
+    target.addEventListener('dragend', evt => {
+        
+        target.style.top = evt.clientY + deltaY + 'px';
+        target.style.left = evt.clientX + deltaX + 'px';
+    });
+    
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
@@ -45,7 +75,7 @@ let addDivButton = homeworkContainer.querySelector('#addDiv');
 addDivButton.addEventListener('click', function() {
     // создать новый div
     const div = createDiv();
-
+    
     // добавить на страницу
     homeworkContainer.appendChild(div);
     // назначить обработчики событий мыши для реализации D&D
