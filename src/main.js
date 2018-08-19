@@ -4,7 +4,7 @@ function loadTowns() {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
-        xhr.open('GET', 'https://aw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
+        xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
         xhr.responseType = 'json';
         
         xhr.addEventListener('load', () => {
