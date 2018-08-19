@@ -44,11 +44,21 @@ function loadTowns() {
         xhr.responseType = 'json';
         
         xhr.addEventListener('load', () => {
-            let towns = xhr.response;
+            let status = xhr.status;
+            
+            if (status === 200) {
+                let towns = xhr.response;
 
-            resolve(towns.sort((left, right) => {
-                return left.name > right.name ? 1 : -1;
-            }));
+                resolve(towns.sort((left, right) => {
+                    return left.name > right.name ? 1 : -1;
+                }));
+            } else {
+                reject(status);
+            }
+        });
+
+        xhr.addEventListener('error', () => {
+           reject(xhr.status);
         });
 
         xhr.send();
@@ -88,11 +98,10 @@ loadTowns().then(result => {
 });
 
 filterInput.addEventListener('keyup', function() {
-    filterResult.textContent = '';
-
     let chunk = filterInput.value;
-
     let filterTowns = towns.filter(t => isMatching(t.name, chunk));
+
+    filterResult.textContent = '';
 
     if (chunk) {
         let str = '';
@@ -100,6 +109,7 @@ filterInput.addEventListener('keyup', function() {
         for (let town of filterTowns) {
             str += town.name + '<br>';
         }
+        
         filterResult.innerHTML = str;
     }
 });

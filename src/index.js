@@ -37,11 +37,21 @@ function loadAndSortTowns() {
         xhr.responseType = 'json';
         
         xhr.addEventListener('load', () => {
-            let towns = xhr.response;
+            let status = xhr.status;
+            
+            if (status === 200) {
+                let towns = xhr.response;
 
-            resolve(towns.sort((left, right) => {
-                return left.name > right.name ? 1 : -1;
-            }));
+                resolve(towns.sort((left, right) => {
+                    return left.name > right.name ? 1 : -1;
+                }));
+            } else {
+                reject(status);
+            }
+        });
+
+        xhr.addEventListener('error', () => {
+            reject(xhr.status);
         });
 
         xhr.send();
