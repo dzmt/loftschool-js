@@ -58,7 +58,7 @@ function loadTowns() {
         });
 
         xhr.addEventListener('error', () => {
-           reject(xhr.status);
+            reject(xhr.status);
         });
 
         xhr.send();
@@ -89,30 +89,60 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
-let towns = null;
+function creatRepeatBlock() {
+    let div = document.createElement('div');
+    let p = document.createElement('p');
+    let button = document.createElement('button');
 
-loadTowns().then(result => {
-    loadingBlock.style.display = 'none';
-    filterBlock.style.display = '';
-    towns = result;
-});
+    div.id = 'repeat-block';
+    div.style.display = 'none';
+    p.textContent = 'Не удалось загрузить города';
+    button.textContent = 'Повторить';
+    
+    button.addEventListener('click', () => {
+        main();
+        div.style.display = 'none';
+    });
 
-filterInput.addEventListener('keyup', function() {
-    let chunk = filterInput.value;
-    let filterTowns = towns.filter(t => isMatching(t.name, chunk));
-
-    filterResult.textContent = '';
-
-    if (chunk) {
-        let str = '';
-
-        for (let town of filterTowns) {
-            str += town.name + '<br>';
-        }
-        
-        filterResult.innerHTML = str;
+    div.appendChild(p);
+    div.appendChild(button);
+    homeworkContainer.appendChild(div);
+}
+    
+function main() {
+    if ( !document.querySelector('#repeat-block') ) {
+        creatRepeatBlock();
     }
-});
+
+    loadTowns()
+        .then(towns => {
+            loadingBlock.style.display = 'none';
+            filterBlock.style.display = '';
+            
+            filterInput.addEventListener('keyup', function() {
+                let chunk = filterInput.value;
+                let filterTowns = towns.filter(t => isMatching(t.name, chunk));
+            
+                filterResult.textContent = '';
+            
+                if (chunk) {
+                    let str = '';
+            
+                    for (let town of filterTowns) {
+                        str += town.name + '<br>';
+                    }
+                    
+                    filterResult.innerHTML = str;
+                }
+            });
+        })
+        .catch(() => {
+            loadingBlock.style.display = 'none';
+            document.querySelector('#repeat-block').style.display = '';
+        });
+}
+    
+main();
 
 export {
     loadTowns,
