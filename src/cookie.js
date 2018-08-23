@@ -33,7 +33,7 @@
  */
 const homeworkContainer = document.querySelector('#homework-container');
 // текстовое поле для фильтрации cookie
-// const filterNameInput = homeworkContainer.querySelector('#filter-name-input');
+const filterNameInput = homeworkContainer.querySelector('#filter-name-input');
 // текстовое поле с именем cookie
 const addNameInput = homeworkContainer.querySelector('#add-name-input');
 // текстовое поле со значением cookie
@@ -42,10 +42,6 @@ const addValueInput = homeworkContainer.querySelector('#add-value-input');
 const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
-
-// filterNameInput.addEventListener('keyup', function() {
-//     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
-// });
 
 function createTableRow (cookieName, cookieValue) {
     let tr = document.createElement('tr');
@@ -65,6 +61,40 @@ function createTableRow (cookieName, cookieValue) {
     tr.appendChild(tdButton);
 
     return tr;
+}
+
+function getCookieArray () {
+    return document.cookie.split('; ');
+}
+
+function isMatch (full, chunk) {
+    return full.includes(chunk);
+}
+
+function filterCookieArray (chunk) {
+    return getCookieArray().filter(cookie => {
+        return isMatch(cookie, chunk);
+    });
+}
+
+function clearElement (element) {
+    let length = element.childNodes.length;
+    
+    for (let i = length - 1; i >= 0; i--) {
+        element.childNodes[i].remove();
+    }
+}
+
+function createDocumentFragmentWithTR (filterCookie) {
+    let df = document.createDocumentFragment();
+
+    filterCookie.forEach(item => {
+        let [name, value] = item.split('=');
+
+        df.appendChild( createTableRow(name, value) )
+    });
+
+    return df;
 }
 
 function createCookieObject () {
@@ -87,49 +117,29 @@ function createCookieObject () {
     return cookieMap;
 }
 
-function refreshCookieValue (name, value) {
-    let tr = document.all[name];
+function fillTable (chunk) {
+    let df = createDocumentFragmentWithTR( filterCookieArray(chunk) );
 
-    tr.children[1].textContent = value;
-}
-
-function addCookieToTable (name, value) {
-    listTable.appendChild( createTableRow(name, value) );
-}
-
-function initTable () {
-    let cookie = createCookieObject();
-
-    for (let name in cookie) {
-        if (cookie.hasOwnProperty(name)) {
-            addCookieToTable(name, cookie[name]);
-        }
-    }
+    clearElement(listTable);
+    listTable.appendChild(df)
 }
 
 function removeCookie (name) {
     document.cookie = `${name}=;max-age=-1`;
 }
 
-initTable();
+fillTable(''); // таблица заполняется существующими cookie
 
 addButton.addEventListener('click', () => {
-    // здесь можно обработать нажатие на кнопку "добавить cookie"
     let name = addNameInput.value;
     let value = addValueInput.value;
     let cookieItem = `${name}=${value}`;
-    let cookie = createCookieObject();
 
     addNameInput.value = '';
     addValueInput.value = '';
 
-    if ( cookie && cookie[name]) {
-        refreshCookieValue(name, value);
-    } else {
-        addCookieToTable(name, value);
-    }
-    
     document.cookie = cookieItem;
+    fillTable(filterNameInput.value);
 });
 
 listTable.addEventListener('click', evt => {
@@ -138,5 +148,11 @@ listTable.addEventListener('click', evt => {
 
     removeCookie(name);
     tr.remove();
-})
+});
+
+filterNameInput.addEventListener('keyup', function() {
+    let chunk = filterNameInput.value;
+
+    fillTable(chunk);
+});
 
