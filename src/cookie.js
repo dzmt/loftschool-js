@@ -135,9 +135,6 @@ addButton.addEventListener('click', () => {
     let value = addValueInput.value;
     let cookieItem = `${name}=${value}`;
 
-    addNameInput.value = '';
-    addValueInput.value = '';
-
     document.cookie = cookieItem;
     fillTable(filterNameInput.value);
 });
