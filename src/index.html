@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Homework 7</title>
+  <style>
+    #filter {
+      max-width: 400px;
+      margin: 0 auto;
+      margin-bottom: 20px;
+    }
+
+
+    table {
+      margin: 0 auto;
+      min-width: 400px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px 20px;
+
+      border: 1px solid black;
+      text-align: center;
+    }
+
+    fieldset {
+      width: 400px;
+      margin: 20px auto;
+    }
+
+    fieldset div {
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="homework-container">
+    <div id="filter">
+      <input type="text" id="filter-name-input">
+      Фильтр cookie
+    </div>
+    <table id="list-table">
+      <thead>
+        <th>Имя</th>
+        <th>Значение</th>
+        <th>Удалить</th>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+  
+    
+      <fieldset>
+        <legend>Добавление Cookies</legend>
+  
+        <div>
+          <input type="text" name="name" id="add-name-input">
+          Имя cookie
+        </div>
+        
+        <div>
+          <input type="text" name="value" id="add-value-input">
+          Значение cookie
+        </div>
+  
+        <button id="add-button">Добавить</button>
+        
+      </fieldset>
+    
+  </div>
+  
+
+  <script src="cookie.js"></script>
+</body>
+</html>
